@@ -28,7 +28,7 @@ public class BookService {
     * @return the Book object, or null if not found
     */
    public Book getBookById(int bookID) {
-	   return bookDAO.getBookbyId(bookID);
+	   return bookDAO.getBookById(bookID);
    }
    
    /**

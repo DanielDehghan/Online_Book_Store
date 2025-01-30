@@ -49,6 +49,9 @@ public class BookServlet extends HttpServlet {
         case "update":
             updateBook(request, response);
             break;
+        case "manage": 
+            manageBooks(request, response);
+            break;
         default:
             listBooks(request, response);
             break;
@@ -57,6 +60,18 @@ public class BookServlet extends HttpServlet {
     throw new ServletException(e);
 }
 	}
+/**
+ * Displys books in manage books
+ * @param request
+ * @param response
+ * @throws ServletException
+ * @throws IOException
+ */
+private void manageBooks(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    List<Book> books = bookService.getAllBooks();
+    request.setAttribute("books", books);
+    request.getRequestDispatcher("book-management.jsp").forward(request, response);
+}
 
 /**
  * Retrieves and displays a list of all books.

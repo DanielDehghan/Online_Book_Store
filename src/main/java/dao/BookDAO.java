@@ -24,6 +24,8 @@ public class BookDAO {
 				PreparedStatement ps = conn.prepareStatement(query);
 				ResultSet rs = ps.executeQuery()){
 			
+			System.out.println("Fetching books from DB...");
+
 			while(rs.next()) {
 				books.add(mapResultSetToBook(rs));
 			}
@@ -39,7 +41,7 @@ public class BookDAO {
 	 * @param BookID the ID of the book
 	 * @return the Book object, or null if not found
 	 */
-	public Book getBookbyId(int bookID) {
+	public Book getBookById(int bookID) {
 		 String query = "SELECT * FROM Books WHERE BookID = ?";
 	        try (Connection conn = DBConnection.getConnection();
 	             PreparedStatement ps = conn.prepareStatement(query)) {
@@ -86,7 +88,7 @@ public class BookDAO {
      * 
      * @param book the book with updated information
      */
-	public void UpdateBook(Book book) {
+	public void updateBook(Book book) {
 		String query = "UPDATE Books SET Title = ?, Author = ?, Category = ?, Price = ?, Description = ?, Stock = ? WHERE BookID = ?";
 		
 		try(Connection conn = DBConnection.getConnection();
@@ -125,30 +127,6 @@ public class BookDAO {
 		}
 	}
 	
-    /**
-     * Updates an existing book in the database.
-     * 
-     * @param book the book with updated information
-     */
-    public void updateBook(Book book) {
-        String query = "UPDATE Books SET Title = ?, Author = ?, Category = ?, Price = ?, Description = ?, Stock = ? WHERE BookID = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-
-            ps.setString(1, book.getTitle());
-            ps.setString(2, book.getAuthor());
-            ps.setString(3, book.getCategory());
-            ps.setDouble(4, book.getPrice());
-            ps.setString(5, book.getDescription());
-            ps.setInt(6, book.getStock());
-            ps.setInt(7, book.getBookID());
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 	
 	/**
 	 * Maps a ResultSet row to a book object
