@@ -28,30 +28,111 @@ public class BookServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
 		
-		switch(action) {
-		case "new":
-			showNewForm(request, response);
-		case "update":
-			
-			
-			
-		}
+        try {
+            if (action == null) {
+                action = "list"; // Default action
+            }
+            
+		switch (action) {
+        case "new":
+            showNewForm(request, response);
+            break;
+        case "insert":
+            insertBook(request, response);
+            break;
+        case "delete":
+            deleteBook(request, response);
+            break;
+        case "edit":
+            showEditForm(request, response);
+            break;
+        case "update":
+            updateBook(request, response);
+            break;
+        default:
+            listBooks(request, response);
+            break;
+    }
+} catch (Exception e) {
+    throw new ServletException(e);
+}
 	}
 
+/**
+ * Retrieves and displays a list of all books.
+ */
 private void listBooks(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 	List<Book> books = bookService.getAllBooks();
 	request.setAttribute("books", books);
 	request.getRequestDispatcher("books.jsp").forward(request, response);
 }
 
+
+/**
+ * Displays the form for adding a new book.
+ */
 private void showNewForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 	request.setAttribute("book", null);
 	request.getRequestDispatcher("book-form.jsp").forward(request, response);
 	
 }
 
-private void 
 
+/**
+ * Inserts a new book into the database.
+ */
+private void insertBook(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+    Book book = new Book();
+    book.setTitle(request.getParameter("title"));
+    book.setAuthor(request.getParameter("author"));
+    book.setCategory(request.getParameter("category"));
+    book.setPrice(Double.parseDouble(request.getParameter("price")));
+    book.setDescription(request.getParameter("description"));
+    book.setStock(Integer.parseInt(request.getParameter("stock")));
 
+    bookService.addBook(book); // Add book through the service
+    response.sendRedirect("BookServlet?action=list");
+}
+
+/**
+ * Displays the form for editing an existing book.
+ */
+private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    int bookID = Integer.parseInt(request.getParameter("id"));
+    Book book = bookService.getBookById(bookID);
+    request.setAttribute("book", book); // Pre-fill form with book details
+    request.getRequestDispatcher("book-form.jsp").forward(request, response);
+}
+
+/**
+ * Updates an existing book in the database.
+ */
+private void updateBook(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+    int bookID = Integer.parseInt(request.getParameter("id"));
+    Book book = new Book();
+    book.setBookID(bookID);
+    book.setTitle(request.getParameter("title"));
+    book.setAuthor(request.getParameter("author"));
+    book.setCategory(request.getParameter("category"));
+    book.setPrice(Double.parseDouble(request.getParameter("price")));
+    book.setDescription(request.getParameter("description"));
+    book.setStock(Integer.parseInt(request.getParameter("stock")));
+
+    bookService.updateBook(book); // Update book through the service
+    response.sendRedirect("BookServlet?action=list");
+}
+
+/**
+ * Deletes a book from the database.
+ */
+private void deleteBook(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+    int bookID = Integer.parseInt(request.getParameter("id"));
+    bookService.deleteBook(bookID); // Delete book through the service
+    response.sendRedirect("BookServlet?action=list");
+}
 
 }

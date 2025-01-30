@@ -37,7 +37,7 @@ public void setAuthor(String author) {
 	this.author = author;
 }
 
-public String getCategry() {
+public String getCategory() {
 	return category;
 }
 
